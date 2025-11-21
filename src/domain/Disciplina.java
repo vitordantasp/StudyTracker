@@ -5,12 +5,12 @@ import java.util.ArrayList;
 
 public class Disciplina {
 
-    private String nome;
+    private String nomeDisciplina;
     private String professor;
     private List<Tarefa> tarefas;
  
-    public Disciplina(String nome, String professor) {
-        this.nome = nome;
+    public Disciplina(String nomeDisciplina, String professor) {
+        this.nomeDisciplina = nomeDisciplina;
         this.professor = professor;
         // Importante: Inicializamos a lista como uma implementação concreta!
         this.tarefas = new ArrayList<>(); // O ArrayList
@@ -19,7 +19,7 @@ public class Disciplina {
     // --- Métodos de Acesso (Getters) ---
     
     public String getNome() {
-        return nome;
+        return nomeDisciplina;
     }
 
     public String getProfessor() {
