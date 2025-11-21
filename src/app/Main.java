@@ -3,6 +3,8 @@ package app;
 // 1. Importamos as classes que criamos no outro pacote
 import domain.Disciplina;
 import domain.Tarefa;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -27,7 +29,7 @@ public class Main {
                     cadastrarDisciplina();
                 
                 case 2 ->
-                    System.out.println(">> (em breve) Cadastrar tarefa");
+                    cadastrarTarefa();
             
                 case 3 ->
                     listarDisciplinas();
@@ -43,7 +45,7 @@ public class Main {
         }
         scanner.close();
     }
-    
+
     private static void menu() {
         String menu = """
                 --------- STUDY TRACKER ---------
@@ -56,6 +58,8 @@ public class Main {
     }
 
     private static void cadastrarDisciplina() {
+        System.out.println("\n------ CADASTRAR DISCIPLINA ------");
+
         System.out.print("Digite o nome da disciplina: ");
         String nomeDisciplina = scanner.nextLine();
 
@@ -69,12 +73,44 @@ public class Main {
         System.out.println("----------------------------------");
     }
 
-    private static void listarDisciplinas() { // por enquanto, lista apenas disciplinas
-        System.out.println();
+    private static void cadastrarTarefa() {
+
         if (disciplinas.isEmpty()) {
-            System.out.println("Nenhuma disciplina cadastrada ainda!");
+            System.out.println("\nNão há disciplinas cadastradas para adicionar tarefas!");
+            return;
+        } 
+
+        System.out.println("\n------- CADASTRAR TAREFA -------");
+        System.out.println("Em qual disciplina você deseja adicionar uma tarefa?");
+        for (int i = 0; i < disciplinas.size(); i++) {
+            System.out.println(i+1 + ". " + disciplinas.get(i).getNome());
+        }
+        int disciplinaEscolhida = scanner.nextInt();
+        scanner.nextLine();
+
+        if (disciplinaEscolhida < 1 || disciplinaEscolhida > disciplinas.size()) {
+            System.out.println("Opção inválida! Tente novamente.");
+            return;
+        }
+
+        System.out.print("Digite qual é a tarefa: ");
+        String titulo = scanner.nextLine();
+        System.out.print("Digite o prazo (formato AAAA-MM-DD, ex: 2024-12-31): ");
+        
+        try {
+            LocalDate data = LocalDate.parse(scanner.nextLine());
+            disciplinas.get(disciplinaEscolhida - 1).adicionarTarefa(new Tarefa(titulo, data));
+            System.out.println("Tarefa adicionada com sucesso!");
+        }  catch (Exception e) {
+            System.out.println("Erro: Data inválida. Use o formato AAAA-MM-DD.");
+        }
+    }
+
+    private static void listarDisciplinas() { // por enquanto, lista apenas disciplinas
+        if (disciplinas.isEmpty()) {
+            System.out.println("\nNenhuma disciplina cadastrada ainda!");
         } else {
-            System.out.println("------ LISTA DE DISCIPLINAS ------");
+            System.out.println("\n------ LISTA DE DISCIPLINAS ------");
             for (Disciplina disciplina : disciplinas) {
                 System.out.println("Disciplina: " + disciplina.getNome());
                 System.out.println("Professor: " + disciplina.getProfessor());
@@ -83,5 +119,4 @@ public class Main {
         }
         System.out.println("----------------------------------");
     }
-    
 }
