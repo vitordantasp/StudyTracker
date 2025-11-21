@@ -40,6 +40,9 @@ public class Main {
                 case 5 ->
                     atualizarStatus();
 
+                case 6 -> 
+                    exibirDashboard();
+
                 case 0 -> {
                     System.out.println("Saindo...");
                     executando = false;
@@ -60,6 +63,7 @@ public class Main {
                 3. Listar disciplinas
                 4. Listar tarefas por disciplina
                 5. Atualizar status de tarefa
+                6. Exibir Dashboard 
                 0. Sair
                 Escolha uma opção:\s""";
         System.out.print(menu);
@@ -136,7 +140,7 @@ public class Main {
         } 
 
         System.out.println("\n---- LISTAR TAREFAS POR DISCIPLINA ----");
-        System.out.println("Você deseja ver a tarefa de qual disciplina?");
+        System.out.println("Você deseja ver as tarefas de qual disciplina?");
         for (int i = 0; i < disciplinas.size(); i++) {
             System.out.println(i+1 + ". " + disciplinas.get(i).getNome());
         }
@@ -217,5 +221,36 @@ public class Main {
         tarefa.setStatus(novoStatus);
         System.out.println("Status atualizado com sucesso!");
     }
-}
+    
+    private static void exibirDashboard() {
+        System.out.println("\n--- DASHBOARD DE ESTUDOS ---");
 
+        if (disciplinas.isEmpty()) {
+            System.out.println("Nenhum dado para gerar estatísticas.");
+            return;
+        }
+
+        int totalTarefasDoSistema = 0;
+
+        for(Disciplina disciplina : disciplinas) {
+            int pendentes = 0;
+            int emProgresso = 0;
+            int concluidas = 0;
+
+            for (Tarefa tarefa : disciplina.getTarefas()) {
+                totalTarefasDoSistema++;
+                switch (tarefa.getStatus()) {
+                    case PENDENTE -> pendentes++;
+                    case EM_PROGRESSO -> emProgresso++;
+                    case CONCLUIDA -> concluidas++;
+                }
+            }
+            System.out.println(disciplina.getNome().toUpperCase());
+            System.out.println("   - Pendentes: " + pendentes);
+            System.out.println("   - Em Progresso: " + emProgresso);
+            System.out.println("   - Concluídas: " + concluidas);
+            System.out.println("-----------------------------");
+        }
+        System.out.println("TOTAL GERAL DE TAREFAS NO SISTEMA: " + totalTarefasDoSistema);
+    }
+}
