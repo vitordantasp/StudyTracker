@@ -1,10 +1,9 @@
 package app;
 
-// 1. Importamos as classes que criamos no outro pacote
 import domain.Disciplina;
 import domain.Tarefa;
-
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -34,6 +33,9 @@ public class Main {
                 case 3 ->
                     listarDisciplinas();
 
+                case 4 ->
+                    listarTarefasPorDisciplinas();
+
                 case 0 -> {
                     System.out.println("Saindo...");
                     executando = false;
@@ -52,6 +54,7 @@ public class Main {
                 1. Cadastrar disciplina
                 2. Cadastrar tarefa
                 3. Listar disciplinas
+                4. Listar tarefas por disciplina
                 0. Sair
                 Escolha uma opção:\s""";
         System.out.print(menu);
@@ -118,5 +121,29 @@ public class Main {
             }
         }
         System.out.println("----------------------------------");
+    }
+
+    private static void listarTarefasPorDisciplinas() {
+     
+        if (disciplinas.isEmpty()) {
+            System.out.println("\nNão há disciplinas cadastradas para listar tarefas!");
+            return;
+        } 
+
+        System.out.println("\n--- LISTAR TAREFAS POR DISCIPLINA ---");
+        System.out.println("Você deseja ver a tarefa de qual disciplina?");
+        for (int i = 0; i < disciplinas.size(); i++) {
+            System.out.println(i+1 + ". " + disciplinas.get(i).getNome());
+        }
+        int disciplinaEscolhida = scanner.nextInt();
+        scanner.nextLine();
+
+        Disciplina disciplina = disciplinas.get(disciplinaEscolhida - 1);
+        DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        
+        for (Tarefa tarefa : disciplina.getTarefas()) {
+            System.out.println("\nTítulo: " + tarefa.getTitulo() + "\nPrazo: " + tarefa.getPrazo().format(formatador) + "\nStatus: " + tarefa.getStatus());
+        }
+        
     }
 }
