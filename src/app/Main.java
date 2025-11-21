@@ -1,6 +1,7 @@
 package app;
 
 import domain.Disciplina;
+import domain.StatusTarefa;
 import domain.Tarefa;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -36,6 +37,9 @@ public class Main {
                 case 4 ->
                     listarTarefasPorDisciplinas();
 
+                case 5 ->
+                    atualizarStatus();
+
                 case 0 -> {
                     System.out.println("Saindo...");
                     executando = false;
@@ -55,6 +59,7 @@ public class Main {
                 2. Cadastrar tarefa
                 3. Listar disciplinas
                 4. Listar tarefas por disciplina
+                5. Atualizar status de tarefa
                 0. Sair
                 Escolha uma opção:\s""";
         System.out.print(menu);
@@ -130,7 +135,7 @@ public class Main {
             return;
         } 
 
-        System.out.println("\n--- LISTAR TAREFAS POR DISCIPLINA ---");
+        System.out.println("\n---- LISTAR TAREFAS POR DISCIPLINA ----");
         System.out.println("Você deseja ver a tarefa de qual disciplina?");
         for (int i = 0; i < disciplinas.size(); i++) {
             System.out.println(i+1 + ". " + disciplinas.get(i).getNome());
@@ -138,12 +143,79 @@ public class Main {
         int disciplinaEscolhida = scanner.nextInt();
         scanner.nextLine();
 
+        if (disciplinaEscolhida < 1 || disciplinaEscolhida > disciplinas.size()) {
+            System.out.println("Opção inválida! Tente novamente.");
+            return;
+        }
+
         Disciplina disciplina = disciplinas.get(disciplinaEscolhida - 1);
         DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         
         for (Tarefa tarefa : disciplina.getTarefas()) {
             System.out.println("\nTítulo: " + tarefa.getTitulo() + "\nPrazo: " + tarefa.getPrazo().format(formatador) + "\nStatus: " + tarefa.getStatus());
+        }    
+    }
+
+    private static void atualizarStatus() {
+        
+        if (disciplinas.isEmpty()) {
+            System.out.println("\nNão há disciplinas cadastradas para mudar o status de tarefas!");
+            return;
+        } 
+
+        System.out.println("\n------- ATUALIZAR STATUS -------");
+        System.out.println("Em qual disciplina você deseja mudar o status da tarefa?");
+        for (int i = 0; i < disciplinas.size(); i++) {
+            System.out.println(i+1 + ". " + disciplinas.get(i).getNome());
+        }
+        int disciplinaEscolhida = scanner.nextInt();
+        scanner.nextLine();
+
+        if (disciplinaEscolhida < 1 || disciplinaEscolhida > disciplinas.size()) {
+            System.out.println("Opção inválida! Tente novamente.");
+            return;
+        }
+
+        Disciplina disciplina = disciplinas.get(disciplinaEscolhida - 1);
+        List<Tarefa> tarefasDaDisciplina = disciplina.getTarefas();
+
+        if (tarefasDaDisciplina.isEmpty()) {
+            System.out.println("Essa disciplina não possui tarefas!");
+            return;
+        }
+
+        System.out.println("Você quer mudar o status de qual tarefa?");
+        for (int i = 0; i < tarefasDaDisciplina.size(); i++) {
+            System.out.println(i+1 + ". " + tarefasDaDisciplina.get(i).getTitulo() + " (" + disciplina.getTarefas().get(i).getStatus() + ")");
         }
         
+        int tarefaEscolhida = scanner.nextInt();
+        scanner.nextLine();
+
+        if (tarefaEscolhida < 1 || tarefaEscolhida > tarefasDaDisciplina.size()) {
+            System.out.println("Tarefa inexistente! Tente novamente.");
+            return;
+        }
+
+        Tarefa tarefa = tarefasDaDisciplina.get(tarefaEscolhida - 1);
+
+        StatusTarefa[] statusPossiveis = StatusTarefa.values();
+        System.out.println("Status possíveis:");
+        for (int i = 0; i < statusPossiveis.length; i++) {
+            System.out.println(i + " - " + statusPossiveis[i]);
+        }
+    
+        System.out.print("Digite o número do novo status: ");
+        int statusEscolhido = scanner.nextInt();
+        scanner.nextLine();
+        
+        if (statusEscolhido < 0 || statusEscolhido >= statusPossiveis.length) {
+            System.out.println("Opção inválida!");
+            return;
+        }
+        StatusTarefa novoStatus = statusPossiveis[statusEscolhido];
+        tarefa.setStatus(novoStatus);
+        System.out.println("Status atualizado com sucesso!");
     }
 }
+
